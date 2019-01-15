@@ -22,11 +22,11 @@ export const register = (req: express.Request, res: express.Response) => {
   })
 }
 
-export const login = (req: express.Request, res: express.Response) => {
+export const login = async (req: express.Request, res: express.Response) => {
   const { username, password } = req.body
 
   User.findOne({ username }).exec()
-    .then((user) => ({ correctPassword: bcrypt.compare(password, user.password), user }))
+    .then(async (user) => ({ correctPassword: await bcrypt.compare(password, user.password), user }))
     .then(({ correctPassword, user }) => {
       if (!correctPassword) {
         throw new Error()
