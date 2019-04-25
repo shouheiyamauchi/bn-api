@@ -15,10 +15,10 @@ export const register = (req: express.Request, res: express.Response) => {
     newUser
       .save()
       .then((user) => {
-        res.status(200).send(user)
+        res.status(200).send({ code: 'SUCCESS', data: user })
       })
       .catch((err) => {
-        res.status(500).send(err)
+        res.status(500).send({ code: 'ERROR', data: err })
       })
   })
 }
@@ -42,9 +42,12 @@ export const login = async (req: express.Request, res: express.Response) => {
         expiresIn: '3h'
       })
 
-      res.status(200).send({ msg: 'Successful login', token })
+      res.status(200).send({ code: 'SUCCESS', data: token })
     })
     .catch(() => {
-      res.status(401).send({ msg: 'Invalid username and password combination' })
+      res.status(401).send({
+        code: 'ERROR',
+        data: 'Invalid username and password combination'
+      })
     })
 }
