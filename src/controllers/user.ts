@@ -12,7 +12,8 @@ export const register = (req: express.Request, res: express.Response) => {
   bcrypt.hash(password, SALT_ROUNDS).then((hash) => {
     const newUser = new User({ username, password: hash })
 
-    newUser.save()
+    newUser
+      .save()
       .then((user) => {
         res.status(200).send(user)
       })
@@ -25,15 +26,21 @@ export const register = (req: express.Request, res: express.Response) => {
 export const login = async (req: express.Request, res: express.Response) => {
   const { username, password } = req.body
 
-  User.findOne({ username }).exec()
-    .then(async (user) => ({ correctPassword: await bcrypt.compare(password, user.password), user }))
+  User.findOne({ username })
+    .exec()
+    .then(async (user) => ({
+      correctPassword: await bcrypt.compare(password, user.password),
+      user
+    }))
     .then(({ correctPassword, user }) => {
       if (!correctPassword) {
         throw new Error()
       }
 
       const payload = { id: user._id }
-      const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '3h' })
+      const token = jwt.sign(payload, process.env.JWT_SECRET, {
+        expiresIn: '3h'
+      })
 
       res.status(200).send({ msg: 'Successful login', token })
     })
