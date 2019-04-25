@@ -20,6 +20,5 @@ const categorySchema = new Schema(
     usePushEach: true
   }
 )
-/* tslint:enable:object-literal-sort-keys */
 
 export default model<Category>('Category', categorySchema)
