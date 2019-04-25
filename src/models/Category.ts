@@ -10,10 +10,10 @@ const categorySchema = new Schema(
     name: { type: String, required: true, index: true, unique: true },
     updated: { type: Date, default: Date.now },
     user: {
-      type: Schema.Types.ObjectId,
-      required: true,
+      index: true,
       ref: 'User',
-      index: true
+      required: true,
+      type: Schema.Types.ObjectId
     }
   },
   {

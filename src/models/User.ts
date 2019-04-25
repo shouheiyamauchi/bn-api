@@ -9,10 +9,10 @@ const userSchema = new Schema(
     password: { type: String, required: true },
     updated: { type: Date, default: Date.now },
     username: {
-      type: String,
-      required: true,
       index: true,
       lowercase: true,
+      required: true,
+      type: String,
       unique: true
     }
   },

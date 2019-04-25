@@ -10,17 +10,17 @@ const moveSchema = new Schema(
     draft: { type: Boolean, required: true },
     name: { type: String, required: true, index: true, unique: true },
     tags: {
-      type: [Schema.Types.ObjectId],
-      required: true,
+      index: true,
       ref: 'Tag',
-      index: true
+      required: true,
+      type: [Schema.Types.ObjectId]
     },
     updated: { type: Date, default: Date.now },
     user: {
-      type: Schema.Types.ObjectId,
-      required: true,
+      index: true,
       ref: 'User',
-      index: true
+      required: true,
+      type: Schema.Types.ObjectId
     }
   },
   {

@@ -6,21 +6,21 @@ const tagSchema = new Schema(
   {
     archived: { type: Boolean },
     category: {
-      type: Schema.Types.ObjectId,
-      required: true,
+      index: true,
       ref: 'Category',
-      index: true
+      required: true,
+      type: Schema.Types.ObjectId
     },
-    color: { type: String, require: true },
+    color: { type: String, required: true },
     created: { type: Date, default: Date.now },
     description: { type: String, required: true },
     name: { type: String, required: true, index: true, unique: true },
     updated: { type: Date, default: Date.now },
     user: {
-      type: Schema.Types.ObjectId,
-      required: true,
+      index: true,
       ref: 'User',
-      index: true
+      required: true,
+      type: Schema.Types.ObjectId
     }
   },
   {
