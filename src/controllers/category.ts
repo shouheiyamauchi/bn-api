@@ -18,8 +18,10 @@ export const create = (req: express.Request, res: express.Response) => {
     })
 }
 
-export const list = (_: express.Request, res: express.Response) => {
-  Category.find()
+export const list = (req: express.Request, res: express.Response) => {
+  const user = req.user.id
+
+  Category.find({ user })
     .populate('user')
     .exec()
     .then((categories) => {
@@ -31,7 +33,9 @@ export const list = (_: express.Request, res: express.Response) => {
 }
 
 export const get = (req: express.Request, res: express.Response) => {
-  Category.findOne({ _id: req.params.id })
+  const user = req.user.id
+
+  Category.findOne({ _id: req.params.id, user })
     .populate('user')
     .exec()
     .then((category) => {

@@ -24,8 +24,10 @@ export const create = (req: express.Request, res: express.Response) => {
     })
 }
 
-export const list = (_: express.Request, res: express.Response) => {
-  Move.find()
+export const list = (req: express.Request, res: express.Response) => {
+  const user = req.user.id
+
+  Move.find({ user })
     .populate('tags user')
     .exec()
     .then((moves) => {
@@ -37,7 +39,9 @@ export const list = (_: express.Request, res: express.Response) => {
 }
 
 export const get = (req: express.Request, res: express.Response) => {
-  Move.findOne({ _id: req.params.id })
+  const user = req.user.id
+
+  Move.findOne({ _id: req.params.id, user })
     .populate('tags user')
     .exec()
     .then((move) => {
