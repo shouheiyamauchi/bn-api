@@ -9,12 +9,14 @@ const moveSchema = new Schema(
     description: { type: String, required: true },
     draft: { type: Boolean, required: true },
     name: { type: String, required: true, index: true, unique: true },
-    tags: {
-      index: true,
-      ref: 'Tag',
-      required: true,
-      type: [Schema.Types.ObjectId]
-    },
+    tags: [
+      {
+        index: true,
+        ref: 'Tag',
+        required: true,
+        type: Schema.Types.ObjectId
+      }
+    ],
     updated: { type: Date, default: Date.now },
     user: {
       index: true,

@@ -1,6 +1,7 @@
 import { Express } from 'express'
 
 import * as categoryController from './controllers/category'
+import * as moveController from './controllers/move'
 import * as tagController from './controllers/tag'
 import * as userController from './controllers/user'
 import passport from './middleware/auth'
@@ -23,4 +24,9 @@ export default (app: Express) => {
   app.get('/tags', tagController.list)
   app.get('/tags/:id', tagController.get)
   app.put('/tags/:id', tagController.update)
+
+  app.post('/moves', moveController.create)
+  app.get('/moves', moveController.list)
+  app.get('/moves/:id', moveController.get)
+  app.put('/moves/:id', moveController.update)
 }
