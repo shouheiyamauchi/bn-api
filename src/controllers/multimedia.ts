@@ -2,14 +2,34 @@ import express from 'express'
 
 import Multimedia from '../models/Multimedia'
 
-export const create = (req: express.Request, res: express.Response) => {
+const DUPLICATE_ERROR = 'Duplicate multimedia name'
+
+export const create = async (req: express.Request, res: express.Response) => {
   const { media, name, value } = req.body
   const user = req.user.id
+
+  if (await isDuplicateName(name, user)) {
+    return res.status(422).send({ code: 'ERROR', data: DUPLICATE_ERROR })
+  }
 
   const newMultimedia = new Multimedia({ media, name, user, value })
 
   newMultimedia
     .save()
+    .then((multimedia) => {
+      res.status(200).send({ code: 'SUCCESS', data: multimedia })
+    })
+    .catch((err) => {
+      res.status(500).send({ code: 'ERROR', data: err })
+    })
+}
+
+export const list = (req: express.Request, res: express.Response) => {
+  const user = req.user.id
+
+  Multimedia.find({ user })
+    .populate('user')
+    .exec()
     .then((multimedia) => {
       res.status(200).send({ code: 'SUCCESS', data: multimedia })
     })
@@ -34,11 +54,16 @@ export const get = (req: express.Request, res: express.Response) => {
 
 export const update = (req: express.Request, res: express.Response) => {
   const { media, name, value } = req.body
+  const user = req.user.id
 
-  Multimedia.findOne({ _id: req.params.id })
+  Multimedia.findOne({ _id: req.params.id, user })
     .populate('user')
     .exec()
-    .then((multimedia) => {
+    .then(async (multimedia) => {
+      if (await isDuplicateName(name, user, multimedia._id)) {
+        throw 422
+      }
+
       multimedia.media = media
       multimedia.name = name
       multimedia.value = value
@@ -50,6 +75,28 @@ export const update = (req: express.Request, res: express.Response) => {
       res.status(200).send({ code: 'SUCCESS', data: multimedia })
     })
     .catch((err) => {
-      res.status(500).send({ code: 'ERROR', data: err })
+      if (err === 422) {
+        res.status(422).send({ code: 'ERROR', data: DUPLICATE_ERROR })
+      } else {
+        res.status(500).send({ code: 'ERROR', data: err })
+      }
     })
+}
+
+const isDuplicateName = async (
+  name: string,
+  user: string,
+  currentMultimediaId?: string
+) => {
+  const multimedia = await Multimedia.find({ name, user }).exec()
+
+  if (
+    multimedia[0] &&
+    (!currentMultimediaId ||
+      multimedia[0]._id.toString() !== currentMultimediaId.toString())
+  ) {
+    return true
+  }
+
+  return false
 }

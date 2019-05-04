@@ -7,7 +7,7 @@ const categorySchema = new Schema(
     archived: { type: Boolean },
     created: { type: Date, default: Date.now },
     description: { type: String, required: true },
-    name: { type: String, required: true, index: true, unique: true },
+    name: { type: String, required: true, index: true },
     updated: { type: Date, default: Date.now },
     user: {
       index: true,

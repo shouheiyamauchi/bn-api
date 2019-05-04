@@ -7,7 +7,7 @@ const multimediaSchema = new Schema(
     archived: { type: Boolean },
     created: { type: Date, default: Date.now },
     media: { enum: ['IMAGE', 'VIDEO'], type: String },
-    name: { type: String, required: true, index: true, unique: true },
+    name: { type: String, required: true, index: true },
     updated: { type: Date, default: Date.now },
     user: {
       index: true,

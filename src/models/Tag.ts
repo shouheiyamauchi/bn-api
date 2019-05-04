@@ -14,7 +14,7 @@ const tagSchema = new Schema(
     color: { type: String, required: true },
     created: { type: Date, default: Date.now },
     description: { type: String, required: true },
-    name: { type: String, required: true, index: true, unique: true },
+    name: { type: String, required: true, index: true },
     updated: { type: Date, default: Date.now },
     user: {
       index: true,

@@ -2,9 +2,15 @@ import express from 'express'
 
 import Tag from '../models/Tag'
 
-export const create = (req: express.Request, res: express.Response) => {
+const DUPLICATE_ERROR = 'Duplicate tag name'
+
+export const create = async (req: express.Request, res: express.Response) => {
   const { category, color, description, name } = req.body
   const user = req.user.id
+
+  if (await isDuplicateName(name, user)) {
+    return res.status(422).send({ code: 'ERROR', data: DUPLICATE_ERROR })
+  }
 
   const newTag = new Tag({ category, color, description, name, user })
 
@@ -48,11 +54,16 @@ export const get = (req: express.Request, res: express.Response) => {
 
 export const update = (req: express.Request, res: express.Response) => {
   const { category, color, description, name } = req.body
+  const user = req.user.id
 
-  Tag.findOne({ _id: req.params.id })
+  Tag.findOne({ _id: req.params.id, user })
     .populate('category user')
     .exec()
-    .then((tag) => {
+    .then(async (tag) => {
+      if (await isDuplicateName(name, user, tag._id)) {
+        throw 422
+      }
+
       tag.category = category
       tag.color = color
       tag.description = description
@@ -65,6 +76,27 @@ export const update = (req: express.Request, res: express.Response) => {
       res.status(200).send({ code: 'SUCCESS', data: tag })
     })
     .catch((err) => {
-      res.status(500).send({ code: 'ERROR', data: err })
+      if (err === 422) {
+        res.status(422).send({ code: 'ERROR', data: DUPLICATE_ERROR })
+      } else {
+        res.status(500).send({ code: 'ERROR', data: err })
+      }
     })
+}
+
+const isDuplicateName = async (
+  name: string,
+  user: string,
+  currentTagId?: string
+) => {
+  const tags = await Tag.find({ name, user }).exec()
+
+  if (
+    tags[0] &&
+    (!currentTagId || tags[0]._id.toString() !== currentTagId.toString())
+  ) {
+    return true
+  }
+
+  return false
 }

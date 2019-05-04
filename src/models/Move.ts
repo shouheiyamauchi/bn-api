@@ -8,11 +8,34 @@ const moveSchema = new Schema(
     created: { type: Date, default: Date.now },
     description: { type: String, required: true },
     draft: { type: Boolean, required: true },
-    name: { type: String, required: true, index: true, unique: true },
+    multimedia: [
+      {
+        ref: 'Multimedia',
+        required: true,
+        type: Schema.Types.ObjectId
+      }
+    ],
+    name: { type: String, required: true, index: true },
     tags: [
       {
         index: true,
         ref: 'Tag',
+        required: true,
+        type: Schema.Types.ObjectId
+      }
+    ],
+    transitionsIn: [
+      {
+        index: true,
+        ref: 'Move',
+        required: true,
+        type: Schema.Types.ObjectId
+      }
+    ],
+    transitionsOut: [
+      {
+        index: true,
+        ref: 'Move',
         required: true,
         type: Schema.Types.ObjectId
       }
