@@ -53,18 +53,10 @@ export const update = (req: express.Request, res: express.Response) => {
     .populate('category user')
     .exec()
     .then((tag) => {
-      if (category) {
-        tag.category = category
-      }
-      if (color) {
-        tag.color = color
-      }
-      if (description) {
-        tag.description = description
-      }
-      if (name) {
-        tag.name = name
-      }
+      tag.category = category
+      tag.color = color
+      tag.description = description
+      tag.name = name
       tag.updated = new Date()
 
       return tag.save()

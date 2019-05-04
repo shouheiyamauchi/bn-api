@@ -59,18 +59,10 @@ export const update = (req: express.Request, res: express.Response) => {
     .populate('category user')
     .exec()
     .then((move) => {
-      if (description) {
-        move.description = description
-      }
-      if (draft) {
-        move.draft = draft
-      }
-      if (name) {
-        move.name = name
-      }
-      if (tags) {
-        move.tags = tags
-      }
+      move.description = description
+      move.draft = draft
+      move.name = name
+      move.tags = tags
       move.updated = new Date()
 
       return move.save()

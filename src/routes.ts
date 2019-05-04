@@ -2,6 +2,7 @@ import { Express } from 'express'
 
 import * as categoryController from './controllers/category'
 import * as moveController from './controllers/move'
+import * as multimediaController from './controllers/multimedia'
 import * as tagController from './controllers/tag'
 import * as userController from './controllers/user'
 import passport from './middleware/auth'
@@ -29,4 +30,8 @@ export default (app: Express) => {
   app.get('/moves', moveController.list)
   app.get('/moves/:id', moveController.get)
   app.put('/moves/:id', moveController.update)
+
+  app.post('/multimedia', multimediaController.create)
+  app.get('/multimedia/:id', multimediaController.get)
+  app.put('/multimedia/:id', multimediaController.update)
 }

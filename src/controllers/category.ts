@@ -53,12 +53,8 @@ export const update = (req: express.Request, res: express.Response) => {
     .populate('user')
     .exec()
     .then((category) => {
-      if (description) {
-        category.description = description
-      }
-      if (name) {
-        category.name = name
-      }
+      category.description = description
+      category.name = name
       category.updated = new Date()
 
       return category.save()
