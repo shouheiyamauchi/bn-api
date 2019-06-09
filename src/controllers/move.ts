@@ -2,6 +2,7 @@ import express from 'express'
 
 import { removeDuplicateItems } from '../helpers'
 import Move from '../models/Move'
+import { Status } from '../utils/http'
 
 const DUPLICATE_ERROR = 'Duplicate move name'
 
@@ -10,7 +11,7 @@ export const create = async (req: express.Request, res: express.Response) => {
   const user = req.user.id
 
   if (await isDuplicateName(name, user)) {
-    return res.status(422).send({ code: 'ERROR', data: DUPLICATE_ERROR })
+    return res.status(422).send({ code: Status.Error, data: DUPLICATE_ERROR })
   }
 
   const newMove = new Move({
@@ -25,10 +26,10 @@ export const create = async (req: express.Request, res: express.Response) => {
   newMove
     .save()
     .then((move) => {
-      res.status(200).send({ code: 'SUCCESS', data: move })
+      res.status(200).send({ code: Status.Success, data: move })
     })
     .catch((err) => {
-      res.status(500).send({ code: 'ERROR', data: err })
+      res.status(500).send({ code: Status.Error, data: err })
     })
 }
 
@@ -39,10 +40,10 @@ export const list = (req: express.Request, res: express.Response) => {
     .populate('multimedia tags user')
     .exec()
     .then((moves) => {
-      res.status(200).send({ code: 'SUCCESS', data: moves })
+      res.status(200).send({ code: Status.Success, data: moves })
     })
     .catch((err) => {
-      res.status(500).send({ code: 'ERROR', data: err })
+      res.status(500).send({ code: Status.Error, data: err })
     })
 }
 
@@ -53,10 +54,10 @@ export const get = (req: express.Request, res: express.Response) => {
     .populate('multimedia tags transitionsIn transitionsOut user')
     .exec()
     .then(async (move) => {
-      res.status(200).send({ code: 'SUCCESS', data: move })
+      res.status(200).send({ code: Status.Success, data: move })
     })
     .catch((err) => {
-      res.status(500).send({ code: 'ERROR', data: err })
+      res.status(500).send({ code: Status.Error, data: err })
     })
 }
 
@@ -82,13 +83,13 @@ export const update = (req: express.Request, res: express.Response) => {
       return move.save()
     })
     .then((move) => {
-      res.status(200).send({ code: 'SUCCESS', data: move })
+      res.status(200).send({ code: Status.Success, data: move })
     })
     .catch((err) => {
       if (err === 422) {
-        res.status(422).send({ code: 'ERROR', data: DUPLICATE_ERROR })
+        res.status(422).send({ code: Status.Error, data: DUPLICATE_ERROR })
       } else {
-        res.status(500).send({ code: 'ERROR', data: err })
+        res.status(500).send({ code: Status.Error, data: err })
       }
     })
 }

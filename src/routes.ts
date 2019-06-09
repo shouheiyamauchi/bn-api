@@ -7,6 +7,7 @@ import * as tagController from './controllers/tag'
 import * as transitionController from './controllers/transition'
 import * as userController from './controllers/user'
 import passport from './middleware/auth'
+import { Status } from './utils/http'
 
 export default (app: Express) => {
   // endpoints not requiring authentication
@@ -15,12 +16,24 @@ export default (app: Express) => {
 
   // endpoints requiring authentication
   app.use(passport.initialize())
-  app.use(passport.authenticate('jwt', { session: false }))
+  app.use((req, res, next) =>
+    passport.authenticate('jwt', { session: false }, (_, user) => {
+      if (!user) {
+        return res
+          .status(401)
+          .send({ code: Status.Error, data: 'Unauthorized' })
+      } else {
+        req.user = user
+        next()
+      }
+    })(req, res, next)
+  )
 
   app.post('/categories', categoryController.create)
   app.get('/categories', categoryController.list)
   app.get('/categories/:id', categoryController.get)
   app.put('/categories/:id', categoryController.update)
+  app.post('/categories/nested', categoryController.nested)
 
   app.post('/moves', moveController.create)
   app.get('/moves', moveController.list)

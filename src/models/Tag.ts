@@ -11,7 +11,6 @@ const tagSchema = new Schema(
       required: true,
       type: Schema.Types.ObjectId
     },
-    color: { type: String, required: true },
     created: { type: Date, default: Date.now },
     description: { type: String, required: true },
     name: { type: String, required: true, index: true },

@@ -1,6 +1,7 @@
 import express from 'express'
 
 import Multimedia from '../models/Multimedia'
+import { Status } from '../utils/http'
 
 const DUPLICATE_ERROR = 'Duplicate multimedia name'
 
@@ -9,7 +10,7 @@ export const create = async (req: express.Request, res: express.Response) => {
   const user = req.user.id
 
   if (await isDuplicateName(name, user)) {
-    return res.status(422).send({ code: 'ERROR', data: DUPLICATE_ERROR })
+    return res.status(422).send({ code: Status.Error, data: DUPLICATE_ERROR })
   }
 
   const newMultimedia = new Multimedia({ media, name, user, value })
@@ -17,10 +18,10 @@ export const create = async (req: express.Request, res: express.Response) => {
   newMultimedia
     .save()
     .then((multimedia) => {
-      res.status(200).send({ code: 'SUCCESS', data: multimedia })
+      res.status(200).send({ code: Status.Success, data: multimedia })
     })
     .catch((err) => {
-      res.status(500).send({ code: 'ERROR', data: err })
+      res.status(500).send({ code: Status.Error, data: err })
     })
 }
 
@@ -31,10 +32,10 @@ export const list = (req: express.Request, res: express.Response) => {
     .populate('user')
     .exec()
     .then((multimedia) => {
-      res.status(200).send({ code: 'SUCCESS', data: multimedia })
+      res.status(200).send({ code: Status.Success, data: multimedia })
     })
     .catch((err) => {
-      res.status(500).send({ code: 'ERROR', data: err })
+      res.status(500).send({ code: Status.Error, data: err })
     })
 }
 
@@ -45,10 +46,10 @@ export const get = (req: express.Request, res: express.Response) => {
     .populate('user')
     .exec()
     .then((multimedia) => {
-      res.status(200).send({ code: 'SUCCESS', data: multimedia })
+      res.status(200).send({ code: Status.Success, data: multimedia })
     })
     .catch((err) => {
-      res.status(500).send({ code: 'ERROR', data: err })
+      res.status(500).send({ code: Status.Error, data: err })
     })
 }
 
@@ -72,13 +73,13 @@ export const update = (req: express.Request, res: express.Response) => {
       return multimedia.save()
     })
     .then((multimedia) => {
-      res.status(200).send({ code: 'SUCCESS', data: multimedia })
+      res.status(200).send({ code: Status.Success, data: multimedia })
     })
     .catch((err) => {
       if (err === 422) {
-        res.status(422).send({ code: 'ERROR', data: DUPLICATE_ERROR })
+        res.status(422).send({ code: Status.Error, data: DUPLICATE_ERROR })
       } else {
-        res.status(500).send({ code: 'ERROR', data: err })
+        res.status(500).send({ code: Status.Error, data: err })
       }
     })
 }

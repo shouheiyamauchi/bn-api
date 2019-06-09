@@ -2,6 +2,7 @@ import express from 'express'
 
 import { asyncForEach, removeDuplicateItems } from '../helpers'
 import Transition from '../models/Transition'
+import { Status } from '../utils/http'
 
 import { updateTransitions } from './move'
 
@@ -12,7 +13,7 @@ export const create = async (req: express.Request, res: express.Response) => {
   const user = req.user.id
 
   if (await isDuplicateTransition(startingMove, endingMove)) {
-    return res.status(422).send({ code: 'ERROR', data: DUPLICATE_ERROR })
+    return res.status(422).send({ code: Status.Error, data: DUPLICATE_ERROR })
   }
 
   const newTransition = new Transition({
@@ -28,10 +29,10 @@ export const create = async (req: express.Request, res: express.Response) => {
       await updateTransitions(endingMove, await getTransitions(endingMove))
       await updateTransitions(startingMove, await getTransitions(startingMove))
 
-      res.status(200).send({ code: 'SUCCESS', data: transition })
+      res.status(200).send({ code: Status.Success, data: transition })
     })
     .catch((err) => {
-      res.status(500).send({ code: 'ERROR', data: err })
+      res.status(500).send({ code: Status.Error, data: err })
     })
 }
 
@@ -42,10 +43,10 @@ export const list = (req: express.Request, res: express.Response) => {
     .populate('endingMove multimedia startingMove user')
     .exec()
     .then((transitions) => {
-      res.status(200).send({ code: 'SUCCESS', data: transitions })
+      res.status(200).send({ code: Status.Success, data: transitions })
     })
     .catch((err) => {
-      res.status(500).send({ code: 'ERROR', data: err })
+      res.status(500).send({ code: Status.Error, data: err })
     })
 }
 
@@ -56,10 +57,10 @@ export const get = (req: express.Request, res: express.Response) => {
     .populate('endingMove multimedia startingMove user')
     .exec()
     .then((transition) => {
-      res.status(200).send({ code: 'SUCCESS', data: transition })
+      res.status(200).send({ code: Status.Success, data: transition })
     })
     .catch((err) => {
-      res.status(500).send({ code: 'ERROR', data: err })
+      res.status(500).send({ code: Status.Error, data: err })
     })
 }
 
@@ -101,13 +102,13 @@ export const update = (req: express.Request, res: express.Response) => {
         }
       )
 
-      res.status(200).send({ code: 'SUCCESS', data: transition })
+      res.status(200).send({ code: Status.Success, data: transition })
     })
     .catch((err) => {
       if (err === 422) {
-        res.status(422).send({ code: 'ERROR', data: DUPLICATE_ERROR })
+        res.status(422).send({ code: Status.Error, data: DUPLICATE_ERROR })
       } else {
-        res.status(500).send({ code: 'ERROR', data: err })
+        res.status(500).send({ code: Status.Error, data: err })
       }
     })
 }

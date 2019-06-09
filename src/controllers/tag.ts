@@ -1,26 +1,27 @@
 import express from 'express'
 
 import Tag from '../models/Tag'
+import { Status } from '../utils/http'
 
 const DUPLICATE_ERROR = 'Duplicate tag name'
 
 export const create = async (req: express.Request, res: express.Response) => {
-  const { category, color, description, name } = req.body
+  const { category, description, name } = req.body
   const user = req.user.id
 
   if (await isDuplicateName(name, user)) {
-    return res.status(422).send({ code: 'ERROR', data: DUPLICATE_ERROR })
+    return res.status(422).send({ code: Status.Error, data: DUPLICATE_ERROR })
   }
 
-  const newTag = new Tag({ category, color, description, name, user })
+  const newTag = new Tag({ category, description, name, user })
 
   newTag
     .save()
     .then((tag) => {
-      res.status(200).send({ code: 'SUCCESS', data: tag })
+      res.status(200).send({ code: Status.Success, data: tag })
     })
     .catch((err) => {
-      res.status(500).send({ code: 'ERROR', data: err })
+      res.status(500).send({ code: Status.Error, data: err })
     })
 }
 
@@ -31,10 +32,10 @@ export const list = (req: express.Request, res: express.Response) => {
     .populate('category user')
     .exec()
     .then((tags) => {
-      res.status(200).send({ code: 'SUCCESS', data: tags })
+      res.status(200).send({ code: Status.Success, data: tags })
     })
     .catch((err) => {
-      res.status(500).send({ code: 'ERROR', data: err })
+      res.status(500).send({ code: Status.Error, data: err })
     })
 }
 
@@ -45,15 +46,15 @@ export const get = (req: express.Request, res: express.Response) => {
     .populate('category user')
     .exec()
     .then((tag) => {
-      res.status(200).send({ code: 'SUCCESS', data: tag })
+      res.status(200).send({ code: Status.Success, data: tag })
     })
     .catch((err) => {
-      res.status(500).send({ code: 'ERROR', data: err })
+      res.status(500).send({ code: Status.Error, data: err })
     })
 }
 
 export const update = (req: express.Request, res: express.Response) => {
-  const { category, color, description, name } = req.body
+  const { category, description, name } = req.body
   const user = req.user.id
 
   Tag.findOne({ _id: req.params.id, user })
@@ -65,7 +66,6 @@ export const update = (req: express.Request, res: express.Response) => {
       }
 
       tag.category = category
-      tag.color = color
       tag.description = description
       tag.name = name
       tag.updated = new Date()
@@ -73,13 +73,13 @@ export const update = (req: express.Request, res: express.Response) => {
       return tag.save()
     })
     .then((tag) => {
-      res.status(200).send({ code: 'SUCCESS', data: tag })
+      res.status(200).send({ code: Status.Success, data: tag })
     })
     .catch((err) => {
       if (err === 422) {
-        res.status(422).send({ code: 'ERROR', data: DUPLICATE_ERROR })
+        res.status(422).send({ code: Status.Error, data: DUPLICATE_ERROR })
       } else {
-        res.status(500).send({ code: 'ERROR', data: err })
+        res.status(500).send({ code: Status.Error, data: err })
       }
     })
 }
