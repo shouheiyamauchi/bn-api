@@ -6,7 +6,6 @@ export interface Category extends Document {
   archived?: boolean
   color: string
   created: Date
-  description: string
   name: string
   updated: Date
   user: string

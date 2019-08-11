@@ -4,10 +4,9 @@ import { Category } from '../typings/category.typings'
 
 const categorySchema = new Schema(
   {
-    archived: { type: Boolean },
+    archived: { type: Boolean, default: false },
     color: { type: String, required: true },
     created: { type: Date, default: Date.now },
-    description: { type: String, required: true },
     name: { type: String, required: true, index: true },
     updated: { type: Date, default: Date.now },
     user: {

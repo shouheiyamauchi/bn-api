@@ -4,7 +4,7 @@ import { Transition } from '../typings/transition.typings'
 
 const transitionSchema = new Schema(
   {
-    archived: { type: Boolean },
+    archived: { type: Boolean, default: false },
     created: { type: Date, default: Date.now },
     endingMove: {
       index: true,

@@ -4,7 +4,7 @@ import { Move } from '../typings/move.typings'
 
 const moveSchema = new Schema(
   {
-    archived: { type: Boolean },
+    archived: { type: Boolean, default: false },
     created: { type: Date, default: Date.now },
     description: { type: String, required: true },
     draft: { type: Boolean, required: true },

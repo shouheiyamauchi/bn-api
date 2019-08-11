@@ -31,7 +31,6 @@ describe('/categories', () => {
 
       const categoryData = {
         color: 'red',
-        description: 'some description',
         name: 'some name'
       }
 
@@ -52,22 +51,6 @@ describe('/categories', () => {
         .post('/categories')
         .set('Authorization', authHeader)
         .send({
-          description: 'some description',
-          name: 'some name'
-        })
-
-      expect(request.body.code).to.equal(Status.Error)
-      expect(request.status).to.equal(500)
-    })
-
-    it('should not be able to create a category without description', async () => {
-      const authHeader = await newUserAuthHeader('user')
-
-      const request = await requester
-        .post('/categories')
-        .set('Authorization', authHeader)
-        .send({
-          color: 'red',
           name: 'some name'
         })
 
@@ -82,8 +65,7 @@ describe('/categories', () => {
         .post('/categories')
         .set('Authorization', authHeader)
         .send({
-          color: 'red',
-          description: 'some description'
+          color: 'red'
         })
 
       expect(request.body.code).to.equal(Status.Error)
@@ -95,7 +77,6 @@ describe('/categories', () => {
 
       const categoryData = {
         color: 'red',
-        description: 'some description',
         name: 'some name'
       }
 
@@ -122,7 +103,6 @@ describe('/categories', () => {
 
       const categoryData = {
         color: 'red',
-        description: 'some description',
         name: 'some name'
       }
 
@@ -171,7 +151,6 @@ describe('/categories', () => {
 
       const categoryData = {
         color: 'red',
-        description: 'some description',
         name: 'some name'
       }
 
@@ -196,13 +175,11 @@ describe('/categories', () => {
 
       const categoryData1 = {
         color: 'red',
-        description: 'some description',
         name: 'some name'
       }
 
       const categoryData2 = {
         color: 'red',
-        description: 'some description',
         name: 'some name 2'
       }
 
@@ -236,13 +213,11 @@ describe('/categories', () => {
 
       const categoryData1 = {
         color: 'red',
-        description: 'some description',
         name: 'some name'
       }
 
       const categoryData2 = {
         color: 'red',
-        description: 'some description',
         name: 'some name 2'
       }
 
@@ -283,7 +258,6 @@ describe('/categories', () => {
 
       const categoryData = {
         color: 'red',
-        description: 'some description',
         name: 'some name'
       }
 
@@ -305,7 +279,6 @@ describe('/categories', () => {
 
       const categoryData = {
         color: 'red',
-        description: 'some description',
         name: 'some name'
       }
 
@@ -342,7 +315,6 @@ describe('/categories', () => {
 
       const categoryData = {
         color: 'red',
-        description: 'some description',
         name: 'some name'
       }
 
@@ -367,7 +339,6 @@ describe('/categories', () => {
 
       const categoryData = {
         color: 'red',
-        description: 'some description',
         name: 'some name'
       }
 
@@ -394,7 +365,6 @@ describe('/categories', () => {
 
       const categoryData = {
         color: 'red',
-        description: 'some description',
         name: 'some name'
       }
 
@@ -434,7 +404,6 @@ describe('/categories', () => {
 
       const categoryData = {
         color: 'red',
-        description: 'some description',
         name: 'some name'
       }
 
@@ -453,7 +422,6 @@ describe('/categories', () => {
 
       const categoryData = {
         color: 'red',
-        description: 'some description',
         name: 'some name'
       }
 

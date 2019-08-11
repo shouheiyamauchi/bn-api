@@ -4,7 +4,7 @@ import { Tag } from '../typings/tag.typings'
 
 const tagSchema = new Schema(
   {
-    archived: { type: Boolean },
+    archived: { type: Boolean, default: false },
     category: {
       index: true,
       ref: 'Category',
@@ -12,7 +12,6 @@ const tagSchema = new Schema(
       type: Schema.Types.ObjectId
     },
     created: { type: Date, default: Date.now },
-    description: { type: String, required: true },
     name: { type: String, required: true, index: true },
     updated: { type: Date, default: Date.now },
     user: {

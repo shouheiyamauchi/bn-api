@@ -10,14 +10,14 @@ const NO_MATCH_ERROR = 'Cannot find category'
 const DUPLICATE_ERROR = 'Duplicate category name'
 
 export const create = async (req: express.Request, res: express.Response) => {
-  const { color, description, name } = req.body
+  const { color, name } = req.body
   const user = req.user.id
 
   if (await isDuplicateName(name, user)) {
     return res.status(422).send({ code: Status.Error, data: DUPLICATE_ERROR })
   }
 
-  const newCategory = new Category({ color, description, name, user })
+  const newCategory = new Category({ color, name, user })
 
   newCategory
     .save()
@@ -35,8 +35,17 @@ export const list = (req: express.Request, res: express.Response) => {
   Category.find({ user })
     .populate('user')
     .exec()
-    .then((categories) => {
-      res.status(200).send({ code: Status.Success, data: categories })
+    .then(async (categories) => {
+      const tags = await Tag.find({ user }).exec()
+
+      const data = categories.map((category) => ({
+        ...category.toObject(),
+        tags: tags.filter(
+          (tag) => String(tag.category) === String(category._id)
+        )
+      }))
+
+      res.status(200).send({ code: Status.Success, data })
     })
     .catch((err) => {
       res.status(500).send({ code: Status.Error, data: err })
@@ -62,7 +71,7 @@ export const get = (req: express.Request, res: express.Response) => {
 }
 
 export const update = (req: express.Request, res: express.Response) => {
-  const { color, description, name } = req.body
+  const { color, name } = req.body
   const user = req.user.id
 
   Category.findOne({ _id: req.params.id, user })
@@ -78,7 +87,6 @@ export const update = (req: express.Request, res: express.Response) => {
       }
 
       category.color = color
-      category.description = description
       category.name = name
       category.updated = new Date()
 
@@ -131,6 +139,7 @@ const nestedCategory = async (
     _id: currentCategoryId,
     user
   }).exec()
+
   const tags = await Tag.find({ category: currentCategoryId, user }).exec()
 
   const categoryTags = []

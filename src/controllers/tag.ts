@@ -6,14 +6,14 @@ import { Status } from '../utils/http'
 const DUPLICATE_ERROR = 'Duplicate tag name'
 
 export const create = async (req: express.Request, res: express.Response) => {
-  const { category, description, name } = req.body
+  const { category, name } = req.body
   const user = req.user.id
 
   if (await isDuplicateName(name, user)) {
     return res.status(422).send({ code: Status.Error, data: DUPLICATE_ERROR })
   }
 
-  const newTag = new Tag({ category, description, name, user })
+  const newTag = new Tag({ category, name, user })
 
   newTag
     .save()
@@ -54,7 +54,7 @@ export const get = (req: express.Request, res: express.Response) => {
 }
 
 export const update = (req: express.Request, res: express.Response) => {
-  const { category, description, name } = req.body
+  const { category, name } = req.body
   const user = req.user.id
 
   Tag.findOne({ _id: req.params.id, user })
@@ -66,7 +66,6 @@ export const update = (req: express.Request, res: express.Response) => {
       }
 
       tag.category = category
-      tag.description = description
       tag.name = name
       tag.updated = new Date()
 

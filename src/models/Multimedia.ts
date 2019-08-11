@@ -4,7 +4,7 @@ import { Multimedia } from '../typings/multimedia.typings'
 
 const multimediaSchema = new Schema(
   {
-    archived: { type: Boolean },
+    archived: { type: Boolean, default: false },
     created: { type: Date, default: Date.now },
     media: { enum: ['IMAGE', 'VIDEO'], type: String },
     name: { type: String, required: true, index: true },
